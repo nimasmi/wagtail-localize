@@ -37,7 +37,7 @@ jobs:
       - type: cache-restore
         key: pip
 
-      - run: pip install -e .[testing]
+      - run: pip install -e .[testing,git]
       - run: pip install ./wagtail
       - run: pip install ./django-modelcluster
 
@@ -56,7 +56,7 @@ jobs:
       - run: git clone git@github.com:wagtail/django-modelcluster.git
       - run: git clone git@github.com:kaedroho/wagtail.git -b internationalisation
 
-      - run: pip install -e .[testing]
+      - run: pip install -e .[testing,git]
       - run: pip install ./wagtail
       - run: pip install ./django-modelcluster
 
