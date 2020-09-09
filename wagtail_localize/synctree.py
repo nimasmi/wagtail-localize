@@ -293,7 +293,7 @@ def on_page_saved(sender, instance, **kwargs):
      - Creation/edit of a translation
      - Creation/edit of a placeholder (ignored)
     """
-    if not getattr(settings, "WAGTAILLOCALIZE_ENABLE_PLACEHOLDERS", False):
+    if not getattr(settings, "WAGTAILLOCALIZE_SYNCHRONIZED_TREES", False):
         return
 
     # Is this a creation or an edit?

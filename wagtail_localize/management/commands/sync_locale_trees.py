@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from wagtail.core.models import Locale
 
@@ -8,6 +9,9 @@ class Command(BaseCommand):
     help = "Synchronises the structure of all locale page trees so they contain the same pages. Creates alias pages where necessary."
 
     def handle(self, **options):
+        if not getattr(settings, "WAGTAILLOCALIZE_SYNCHRONIZED_TREES", False):
+            return
+
         # Get an index of all pages
         index = PageIndex.from_database().sort_by_tree_position()
 
