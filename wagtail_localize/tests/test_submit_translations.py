@@ -328,9 +328,10 @@ class TestSubmitPageTranslation(TestCase, WagtailTestUtils):
         translated_page = self.en_blog_post.get_translation(self.fr_locale)
         self.assertTrue(translated_page.live)
 
-        # The parent should've been created in draft
+        # The parent should've been created as an alias
         translated_parent_page = self.en_blog_index.get_translation(self.fr_locale)
-        self.assertFalse(translated_parent_page.live)
+        self.assertTrue(translated_parent_page.live)
+        self.assertEqual(translated_parent_page.alias_of.specific, self.en_blog_index)
 
         # Just check the translation was created under its parent
         self.assertEqual(translated_page.get_parent(), translated_parent_page.page_ptr)
@@ -362,13 +363,15 @@ class TestSubmitPageTranslation(TestCase, WagtailTestUtils):
         translated_page = self.en_blog_post.get_translation(es_locale)
         self.assertTrue(translated_page.live)
 
-        # The parent should've been created in draft
+        # The parent should've been created as an alias
         translated_parent_page = self.en_blog_index.get_translation(es_locale)
-        self.assertFalse(translated_parent_page.live)
+        self.assertTrue(translated_parent_page.live)
+        self.assertEqual(translated_parent_page.alias_of.specific, self.en_blog_index)
 
-        # The grandparent should've been created in draft
+        # The grandparent should've been created as an alias
         translated_grandparent_page = self.en_homepage.get_translation(es_locale)
-        self.assertFalse(translated_grandparent_page.live)
+        self.assertTrue(translated_grandparent_page.live)
+        self.assertEqual(translated_grandparent_page.alias_of.specific, self.en_homepage)
 
         # Just check the translations were created in the right place
         self.assertEqual(translated_page.get_parent(), translated_parent_page.page_ptr)
