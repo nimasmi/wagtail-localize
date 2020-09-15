@@ -296,11 +296,14 @@ def on_page_saved(sender, instance, **kwargs):
     if not getattr(settings, "WAGTAILLOCALIZE_SYNCHRONIZED_TREES", False):
         return
 
+    if not isinstance(sender, Page):
+        return
+
     # Is this a creation or an edit?
     is_creation = kwargs["created"]
 
     # Is this a source, translation or an alias?
-    if instance.is_source_translation:
+    if False:
         page_type = "source"
     elif instance.alias_of_id is not None:
         page_type = "alias"
