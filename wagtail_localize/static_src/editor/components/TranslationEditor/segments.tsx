@@ -18,7 +18,8 @@ import {
     StringTranslationAPI,
     SegmentOverride,
     SegmentOverrideAPI,
-    Locale
+    Locale,
+    RelatedObjectSegment
 } from '.';
 import {
     EditorState,
@@ -708,6 +709,80 @@ const EditorSynchronisedValueSegment: FunctionComponent<
     );
 };
 
+interface EditorRelatedObjectSegmentProps {
+    segment: RelatedObjectSegment;
+}
+
+const EditorRelatedObjectSegment: FunctionComponent<
+    EditorRelatedObjectSegmentProps
+> = ({ segment }) => {
+    const openEditUrl = () => {
+        if (segment.dest) {
+            window.open(segment.dest.editUrl);
+        }
+    };
+
+    const openCreateTranslationRequestUrl = () => {
+        if (!!segment.source && segment.source.createTranslationRequestUrl) {
+            window.open(segment.source.createTranslationRequestUrl);
+        }
+    };
+
+    return (
+        <li>
+            {segment.location.subField && (
+                <SegmentFieldLabel>
+                    {segment.location.subField}
+                </SegmentFieldLabel>
+            )}
+
+            <SegmentValue>
+                <p>
+                    {segment.source
+                        ? segment.source.title
+                        : gettext('[DELETED]')}
+                </p>
+            </SegmentValue>
+            <SegmentToolbar>
+                <li>
+                    {!!segment.dest ? (
+                        <>
+                            {segment.translationProgress.translatedSegments} /{' '}
+                            {segment.translationProgress.totalSegments}{' '}
+                            {gettext('segments translated')}
+                            {segment.translationProgress.translatedSegments ==
+                                segment.translationProgress.totalSegments && (
+                                <Icon name="tick" className="icon--green" />
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            {gettext('Not translated')}{' '}
+                            <Icon name="warning" className="icon--red" />
+                        </>
+                    )}
+                </li>
+                <li>
+                    {segment.dest && segment.dest.editUrl && (
+                        <ActionButton onClick={openEditUrl}>
+                            {gettext('Edit')}
+                        </ActionButton>
+                    )}
+                    {!segment.dest &&
+                        !!segment.source &&
+                        segment.source.createTranslationRequestUrl && (
+                            <ActionButton
+                                onClick={openCreateTranslationRequestUrl}
+                            >
+                                {gettext('Translate')}
+                            </ActionButton>
+                        )}
+                </li>
+            </SegmentToolbar>
+        </li>
+    );
+};
+
 interface EditorSegmentListProps extends EditorProps, EditorState {
     dispatch: React.Dispatch<EditorAction>;
     csrfToken: string;
@@ -766,6 +841,9 @@ const EditorSegmentList: FunctionComponent<EditorSegmentListProps> = ({
                                 csrfToken={csrfToken}
                             />
                         );
+                    }
+                    case 'related_object': {
+                        return <EditorRelatedObjectSegment segment={segment} />;
                     }
                 }
             });
